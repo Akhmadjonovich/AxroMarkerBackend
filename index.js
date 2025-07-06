@@ -26,9 +26,12 @@ app.post('/upload', upload.single('image'), async (req, res) => {
   try {
     const file = req.file;
 
+    // Fayl nomini tozalash (masalan: 1751781917587-1000008524_ZgxEAM8eg.jpg → 1751781917587-1000008524_ZgxEAM8eg.jpg)
+    const cleanFileName = Date.now() + '-' + file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, '-');
+
     const result = await imagekit.upload({
       file: file.buffer,
-      fileName: Date.now() + '-' + file.originalname,
+      fileName: cleanFileName,
       folder: "products",
     });
 
@@ -38,6 +41,7 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     res.status(500).json({ error: 'Image upload failed' });
   }
 });
+
 
 // Server start
 const PORT = process.env.PORT || 5000;
